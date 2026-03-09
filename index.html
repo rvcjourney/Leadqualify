@@ -178,6 +178,11 @@
             color: #c62828;
         }
 
+        .status-badge.potential {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
         .status-icon {
             font-size: 20px;
         }
@@ -527,12 +532,16 @@
             const confidence = result.Confidence || '-';
             const product = result.Matched_Product || '-';
 
-            // Update status badge
+            // Update status badge based on score ranges
             const statusBadge = document.getElementById('statusBadge');
             const statusText = document.getElementById('statusText');
-            if (lead === 'qualified') {
+
+            if (score >= 70) {
                 statusBadge.className = 'status-badge qualified';
                 statusText.textContent = '✓ Qualified';
+            } else if (score >= 40) {
+                statusBadge.className = 'status-badge potential';
+                statusText.textContent = '⊙ Potential Lead';
             } else {
                 statusBadge.className = 'status-badge not-qualified';
                 statusText.textContent = '✗ Not Qualified';
@@ -545,14 +554,14 @@
 
             scoreNumber.textContent = score;
 
-            // Set circle class based on score
+            // Set circle class based on qualification score ranges
             scoreCircle.className = 'score-circle';
             if (score >= 70) {
-                scoreCircle.classList.add('high');
+                scoreCircle.classList.add('high');  // Qualified
             } else if (score >= 40) {
-                scoreCircle.classList.add('medium');
+                scoreCircle.classList.add('medium'); // Potential Lead
             } else {
-                scoreCircle.classList.add('low');
+                scoreCircle.classList.add('low');    // Not Qualified
             }
 
             // Animate progress circle
