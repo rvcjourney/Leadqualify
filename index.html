@@ -1,633 +1,540 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>Lead Qualification Result</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Qualification Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-:root{
---bg:#f5f7fb;
---surface:#ffffff;
---surface-soft:#f9fbff;
---text:#0f172a;
---muted:#64748b;
---line:#e2e8f0;
---primary:#0ea5e9;
---primary-strong:#0284c7;
---risk:#ef4444;
---success:#10b981;
---shadow:0 16px 40px rgba(15,23,42,0.08);
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-body{
-margin:0;
-font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
-color:var(--text);
-background:var(--bg);
-padding:24px;
-}
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-.container{
-max-width:1020px;
-margin:auto;
-background:var(--surface);
-padding:28px;
-border-radius:16px;
-box-shadow:var(--shadow);
-border:1px solid var(--line);
-}
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
 
-.title{
-margin:0 0 6px;
-font-size:28px;
-line-height:1.2;
-text-align:left;
-}
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
 
-.subtitle{
-margin:0 0 22px;
-color:var(--muted);
-}
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
 
-.help{
-margin:-6px 0 18px;
-padding:14px;
-border:1px solid #dbeafe;
-background:#f8fbff;
-border-radius:12px;
-font-size:13px;
-color:#334155;
-line-height:1.45;
-}
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            margin-bottom: 24px;
+        }
 
-.help b{
-color:#0f172a;
-}
+        .input-section {
+            margin-bottom: 30px;
+        }
 
-.help-head{
-display:flex;
-align-items:center;
-gap:8px;
-font-weight:700;
-font-size:14px;
-color:#0f172a;
-margin-bottom:10px;
-}
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.help-dot{
-width:10px;
-height:10px;
-border-radius:50%;
-background:linear-gradient(135deg,var(--primary),var(--primary-strong));
-box-shadow:0 0 0 4px rgba(14,165,233,0.12);
-}
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
 
-.help-grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:8px;
-}
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
 
-.help-item{
-background:#ffffff;
-border:1px solid #dbeafe;
-border-radius:10px;
-padding:9px 10px;
-}
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
 
-.help-key{
-font-weight:700;
-font-size:12px;
-text-transform:uppercase;
-letter-spacing:0.3px;
-color:#0f172a;
-margin-bottom:4px;
-}
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.form-box{
-display:flex;
-flex-direction:column;
-gap:10px;
-margin-bottom:24px;
-}
+        .btn-analyze {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-width: 150px;
+        }
 
-.form-actions{
-display:flex;
-justify-content:flex-end;
-}
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
 
-#query{
-flex:1;
-padding:18px 16px;
-border:1px solid var(--line);
-border-radius:10px;
-font-size:15px;
-min-height:58px;
-background:var(--surface-soft);
-outline:none;
-transition:border-color 0.2s, box-shadow 0.2s;
-resize:vertical;
-}
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-#query:focus{
-border-color:var(--primary);
-box-shadow:0 0 0 3px rgba(14,165,233,0.18);
-}
+        .btn-clear {
+            background: #f0f0f0;
+            color: #333;
+            padding: 12px 20px;
+        }
 
-button{
-padding:14px 20px;
-background:linear-gradient(135deg,var(--primary),var(--primary-strong));
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-min-width:120px;
-transition:transform 0.12s ease, filter 0.2s ease;
-}
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
 
-button:hover{
-filter:brightness(1.03);
-}
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
 
-button:active{
-transform:translateY(1px);
-}
+        .result-section.show {
+            display: block;
+        }
 
-button:disabled{
-opacity:0.7;
-cursor:not-allowed;
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.score-box{
-display:flex;
-justify-content:center;
-margin:10px 0 12px;
-}
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
 
-.circle{
-width:170px;
-height:170px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:44px;
-font-weight:bold;
-background:conic-gradient(var(--primary) calc(var(--score)*1%), #e2e8f0 0%);
-position:relative;
-box-shadow:0 12px 24px rgba(2,132,199,0.18);
-}
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.circle span{
-background:var(--surface);
-width:128px;
-height:128px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-}
+        .status-badge.qualified {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
 
-.section{
-margin-top:20px;
-}
+        .status-badge.not-qualified {
+            background: #ffebee;
+            color: #c62828;
+        }
 
-.section h3{
-margin:0 0 12px;
-font-size:18px;
-}
+        .status-icon {
+            font-size: 20px;
+        }
 
-.layout{
-display:grid;
-grid-template-columns:1fr;
-gap:14px;
-}
+        .score-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
 
-.summary{
-background:#ffffff;
-border:1px solid var(--line);
-border-radius:14px;
-padding:18px;
-}
+        .score-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+        }
 
-.section-card{
-background:#ffffff;
-border:1px solid var(--line);
-border-radius:14px;
-padding:16px;
-}
+        .score-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
 
-.status-row{
-display:flex;
-gap:10px;
-justify-content:center;
-flex-wrap:wrap;
-margin-bottom:12px;
-}
+        .score-circle-background {
+            fill: none;
+            stroke: #f0f0f0;
+            stroke-width: 12;
+        }
 
-.pill{
-display:inline-block;
-padding:6px 12px;
-border-radius:999px;
-font-size:12px;
-font-weight:700;
-letter-spacing:0.3px;
-text-transform:uppercase;
-border:1px solid transparent;
-}
+        .score-circle-progress {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
 
-.pill.hot{
-background:#ecfdf5;
-color:#047857;
-border-color:#a7f3d0;
-}
+        .score-circle.high .score-circle-progress {
+            stroke: #4caf50;
+        }
 
-.pill.warm{
-background:#fffbeb;
-color:#b45309;
-border-color:#fde68a;
-}
+        .score-circle.medium .score-circle-progress {
+            stroke: #ff9800;
+        }
 
-.pill.cold{
-background:#eff6ff;
-color:#1d4ed8;
-border-color:#bfdbfe;
-}
+        .score-circle.low .score-circle-progress {
+            stroke: #f44336;
+        }
 
-.pill.priority{
-background:#f8fafc;
-color:#334155;
-border-color:#cbd5e1;
-}
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+        }
 
-.action{
-margin-top:10px;
-padding:12px;
-border-radius:10px;
-background:#f8fafc;
-border:1px solid #e2e8f0;
-font-size:14px;
-}
+        .score-number {
+            font-size: 56px;
+            font-weight: 700;
+            color: #333;
+        }
 
-.breakdown{
-display:grid;
-grid-template-columns:repeat(2, minmax(0,1fr));
-gap:10px;
-margin-top:12px;
-}
+        .score-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
 
-.metric{
-padding:10px 12px;
-border-radius:10px;
-background:#f8fafc;
-border:1px solid #e2e8f0;
-font-size:13px;
-}
+        .score-title {
+            font-size: 16px;
+            color: #666;
+            font-weight: 600;
+        }
 
-.metric b{
-font-size:16px;
-}
+        .reason-section {
+            background: #f9f9f9;
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
 
-.card{
-padding:13px 15px;
-margin:8px 0;
-border-radius:10px;
-border:1px solid transparent;
-line-height:1.45;
-}
+        .reason-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
 
-.risk{
-background:#fff5f5;
-border-color:#fecaca;
-border-left:5px solid var(--risk);
-}
+        .reason-text {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+        }
 
-.opportunity{
-background:#f0fdf4;
-border-color:#bbf7d0;
-border-left:5px solid var(--success);
-}
+        .error-message {
+            display: none;
+            background: #ffebee;
+            border: 1px solid #ef5350;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
 
-.match{
-background:#f0f9ff;
-border-color:#bae6fd;
-border-left:5px solid var(--primary);
-}
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
 
-.badge{
-display:inline-block;
-padding:6px 12px;
-background:#0f172a;
-color:white;
-border-radius:20px;
-margin-top:2px;
-font-size:13px;
-}
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.meta{
-display:flex;
-justify-content:center;
-margin-bottom:2px;
-}
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
 
-.empty{
-color:var(--muted);
-font-size:14px;
-padding:8px 2px;
-}
+        .loading.show {
+            display: block;
+        }
 
-.grid-2{
-display:grid;
-grid-template-columns:repeat(2, minmax(0,1fr));
-gap:8px;
-}
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
 
-.error{
-margin-top:10px;
-color:#b91c1c;
-background:#fef2f2;
-border:1px solid #fecaca;
-padding:10px 12px;
-border-radius:10px;
-font-size:14px;
-}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-@media (max-width:680px){
-body{
-padding:14px;
-}
-.container{
-padding:18px;
-border-radius:14px;
-}
-.form-box{
-gap:10px;
-}
-button{
-width:100%;
-}
-.title{
-font-size:24px;
-}
-.breakdown,
-.grid-2{
-grid-template-columns:1fr;
-}
-.help-grid{
-grid-template-columns:1fr;
-}
-}
+        .loading-text {
+            color: #666;
+            font-size: 14px;
+        }
 
-</style>
+        @media (max-width: 600px) {
+            .card {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-analyze, .btn-clear {
+                width: 100%;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-number {
+                font-size: 42px;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Lead Qualification Agent</h1>
+            <p>Analyze customer inquiries and determine lead quality instantly</p>
+        </div>
 
-<div class="container">
+        <div class="card">
+            <div class="input-section">
+                <label class="input-label">Customer Inquiry</label>
+                <textarea id="inquiry" placeholder="Enter the customer inquiry here..."></textarea>
+                <div class="button-group">
+                    <button class="btn-clear" onclick="clearInput()">Clear</button>
+                    <button class="btn-analyze" id="analyzeBtn" onclick="analyzeInquiry()">Analyze</button>
+                </div>
+            </div>
 
-<h2 class="title">Lead Qualification</h2>
-<p class="subtitle">Enter a customer inquiry to score lead quality and highlight key decision factors.</p>
-<div class="help">
-<div class="help-head"><span class="help-dot"></span>How To Read Results</div>
-<div class="help-grid">
-<div class="help-item">
-<div class="help-key">Hot / Warm / Cold</div>
-Hot: contact now. Warm: follow up. Cold: nurture later.
-</div>
-<div class="help-item">
-<div class="help-key">P1 / P2 / P3</div>
-Sales priority: P1 high, P2 medium, P3 low.
-</div>
-<div class="help-item">
-<div class="help-key">Rule Score</div>
-Match score from your ICP business rules.
-</div>
-<div class="help-item">
-<div class="help-key">LLM Fit Score</div>
-AI context score from customer wording.
-</div>
-</div>
-</div>
+            <div class="error-message" id="errorMsg"></div>
+            <div class="loading" id="loadingSpinner">
+                <div class="spinner"></div>
+                <div class="loading-text">Analyzing inquiry...</div>
+            </div>
 
-<!-- USER INPUT -->
+            <div class="result-section" id="resultSection">
+                <div class="result-header">
+                    <div>
+                        <h2 style="margin-bottom: 10px; color: #333;">Qualification Result</h2>
+                        <span class="status-badge" id="statusBadge">
+                            <span class="status-icon">⊙</span>
+                            <span id="statusText">Analyzing...</span>
+                        </span>
+                    </div>
+                </div>
 
-<div class="form-box">
-<textarea id="query" rows="3" placeholder="Describe the customer inquiry..."></textarea>
-<div class="form-actions">
-<button id="analyzeBtn" onclick="loadResult()">Analyze</button>
-</div>
-</div>
+                <div class="score-box">
+                    <div class="score-circle" id="scoreCircle">
+                        <svg viewBox="0 0 200 200">
+                            <circle class="score-circle-background" cx="100" cy="100" r="90"></circle>
+                            <circle class="score-circle-progress" id="scoreProgress" cx="100" cy="100" r="90"></circle>
+                        </svg>
+                        <div class="score-text">
+                            <div class="score-number" id="scoreNumber">-</div>
+                            <div class="score-label">Score</div>
+                        </div>
+                    </div>
+                    <div class="score-title">Lead Quality Score</div>
+                </div>
 
-<div id="error" class="error" style="display:none;"></div>
+                <div class="reason-section">
+                    <div class="reason-title">Analysis</div>
+                    <div class="reason-text" id="reasonText">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="layout">
-<div class="summary">
-<div class="status-row">
-<span id="temperature" class="pill cold">Cold</span>
-<span id="priority" class="pill priority">P3</span>
-</div>
-<div class="score-box">
-<div class="circle" id="scoreCircle">
-<span><span id="scoreValue">0</span></span>
-</div>
-</div>
+    <script>
+        async function analyzeInquiry() {
+            const inquiry = document.getElementById('inquiry').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loadingSpinner');
+            const resultSection = document.getElementById('resultSection');
 
-<div class="meta" id="confidence"><span class="badge">Confidence: -</span></div>
-<div class="breakdown" id="scoreBreakdown">
-<div class="metric">Rule Score: <b>-</b></div>
-<div class="metric">LLM Fit Score: <b>-</b></div>
-</div>
-<div class="action" id="nextAction">Next Action: -</div>
-</div>
+            // Validate input
+            if (!inquiry) {
+                errorMsg.textContent = '⚠ Please enter a customer inquiry before analyzing.';
+                errorMsg.classList.add('show');
+                return;
+            }
 
-<div class="section section-card">
-<h3>Extracted Lead Data</h3>
-<div id="leadData" class="empty">No extracted data yet.</div>
-</div>
+            errorMsg.classList.remove('show');
+            loading.classList.add('show');
+            resultSection.classList.remove('show');
+            analyzeBtn.disabled = true;
 
-<div class="section section-card">
-<h3>Match Factors</h3>
-<div id="matches" class="empty">No data yet.</div>
-</div>
+            try {
+                const response = await fetch('https://n8n.b2botix.ai/webhook/Lead-Qalification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: inquiry })
+                });
 
-<div class="section section-card">
-<h3>Risks</h3>
-<div id="risks" class="empty">No data yet.</div>
-</div>
+                if (!response.ok) {
+                    throw new Error('Server error. Please try again.');
+                }
 
-<div class="section section-card">
-<h3>Opportunities</h3>
-<div id="opportunities" class="empty">No data yet.</div>
-</div>
-</div> 
+                const data = await response.json();
+                const result = Array.isArray(data) ? data[0] : data;
 
-</div>
+                if (!result) {
+                    throw new Error('No response from server.');
+                }
 
-<script>
-function formatLabel(key){
-return key.replaceAll("_"," ").replace(/\b\w/g, (c) => c.toUpperCase())
-}
+                displayResult(result);
+            } catch (error) {
+                errorMsg.textContent = '❌ ' + (error.message || 'Unable to analyze inquiry. Please check your connection.');
+                errorMsg.classList.add('show');
+            } finally {
+                analyzeBtn.disabled = false;
+                loading.classList.remove('show');
+            }
+        }
 
-function formatValue(value){
-if(value === true) return "Yes"
-if(value === false) return "No"
-if(value === null || value === undefined || value === "") return "Not provided"
-if(typeof value === "string") return value.charAt(0).toUpperCase() + value.slice(1)
-return String(value)
-}
+        function displayResult(result) {
+            const score = Math.max(0, Math.min(100, Number(result.Score) || 0));
+            const lead = (result.Lead || '').toLowerCase();
+            const reason = result.Reason || 'No analysis available.';
 
-function renderObjectGrid(obj){
-const entries = Object.entries(obj || {}).filter(([,value]) => value !== null && value !== undefined && value !== "")
-if(!entries.length){
-return `<div class="empty">Not enough extracted details found.</div>`
-}
-return `<div class="grid-2">` + entries.map(([key,value]) => `
-<div class="card match">
-${formatLabel(key)} : <b>${formatValue(value)}</b>
-</div>`).join("") + `</div>`
-}
+            // Update status badge
+            const statusBadge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+            if (lead === 'qualified') {
+                statusBadge.className = 'status-badge qualified';
+                statusText.textContent = '✓ Qualified';
+            } else {
+                statusBadge.className = 'status-badge not-qualified';
+                statusText.textContent = '✗ Not Qualified';
+            }
 
-function renderMatchFactors(matchFactors){
-const entries = Object.entries(matchFactors || {})
-if(!entries.length){
-return `<div class="empty">No match factors available.</div>`
-}
+            // Update score circle
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreProgress = document.getElementById('scoreProgress');
 
-return entries.map(([key,factor]) => {
-if(factor && typeof factor === "object" && !Array.isArray(factor)){
-return `
-<div class="card match">
-<b>${formatLabel(key)}</b><br>
-Match : <b>${formatValue(factor.match)}</b><br>
-Relevance : ${formatValue(factor.relevance)}<br>
-Reason : ${formatValue(factor.reason)}
-</div>
-`
-}
+            scoreNumber.textContent = score;
 
-return `
-<div class="card match">
-${formatLabel(key)} : <b>${formatValue(factor)}</b>
-</div>
-`
-}).join("")
-}
+            // Set circle class based on score
+            scoreCircle.className = 'score-circle';
+            if (score >= 70) {
+                scoreCircle.classList.add('high');
+            } else if (score >= 40) {
+                scoreCircle.classList.add('medium');
+            } else {
+                scoreCircle.classList.add('low');
+            }
 
-async function loadResult(){
-const button = document.getElementById("analyzeBtn")
-const error = document.getElementById("error")
-error.style.display = "none"
-error.textContent = ""
+            // Animate progress circle
+            const circumference = 2 * Math.PI * 90;
+            const offset = circumference - (score / 100) * circumference;
+            scoreProgress.style.strokeDasharray = circumference;
+            scoreProgress.style.strokeDashoffset = offset;
 
-const query = document.getElementById("query").value
+            // Update reason text
+            document.getElementById('reasonText').textContent = reason;
 
-if(!query){
-error.textContent = "Please enter a query before analyzing."
-error.style.display = "block"
-return
-}
+            // Show result section
+            document.getElementById('resultSection').classList.add('show');
+        }
 
-button.disabled = true
-button.innerText = "Analyzing..."
+        function clearInput() {
+            document.getElementById('inquiry').value = '';
+            document.getElementById('resultSection').classList.remove('show');
+            document.getElementById('errorMsg').classList.remove('show');
+            document.getElementById('inquiry').focus();
+        }
 
-try{
-
-const response = await fetch("https://n8n.b2botix.ai/webhook/lead-qualification",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body: JSON.stringify({
-query: query
-})
-
-})
-
-if(!response.ok){
-throw new Error("Server returned an invalid response.")
-}
-
-const data = await response.json()
-const result = Array.isArray(data) ? data[0] : data
-
-if(!result){
-throw new Error("No result found in API response.")
-}
-
-/* Score */
-
-const score = Math.max(0, Math.min(100, Number(result.score) || 0))
-
-document.getElementById("scoreValue").innerText = score
-document.getElementById("scoreCircle").style.setProperty("--score",score)
-
-
-/* Confidence */
-
-document.getElementById("confidence").innerHTML =
-`<span class="badge">Confidence: ${result.confidence || "-"}</span>`
-
-const temp = String(result.lead_temperature || "cold").toLowerCase()
-const safeTemp = ["hot","warm","cold"].includes(temp) ? temp : "cold"
-const temperatureEl = document.getElementById("temperature")
-temperatureEl.className = `pill ${safeTemp}`
-temperatureEl.innerText = safeTemp
-
-document.getElementById("priority").innerText = result.sales_priority || "P3"
-document.getElementById("nextAction").innerText = `Next Action: ${result.next_best_action || "-"}`
-
-const breakdown = result.score_breakdown || {}
-document.getElementById("scoreBreakdown").innerHTML = `
-<div class="metric">Rule Score: <b>${formatValue(breakdown.rule_score)}</b></div>
-<div class="metric">LLM Fit Score: <b>${formatValue(breakdown.llm_fit_score)}</b></div>
-`
-
-document.getElementById("leadData").innerHTML = renderObjectGrid(result.lead_extracted || {})
-
-
-/* Match Factors */
-document.getElementById("matches").innerHTML = renderMatchFactors(result.match_factors)
-
-/* Risks */
-
-let riskHTML = ""
-const risks = Array.isArray(result.risks) ? result.risks : Object.values(result.risks || {})
-riskHTML = risks.map((item) => `
-<div class="card risk">
-${formatValue(item)}
-</div>`).join("")
-
-document.getElementById("risks").innerHTML = riskHTML || `<div class="empty">No risks reported.</div>`
-
-
-/* Opportunities */
-
-let oppHTML = ""
-const opportunities = Array.isArray(result.opportunities) ? result.opportunities : Object.values(result.opportunities || {})
-oppHTML = opportunities.map((item) => `
-<div class="card opportunity">
-${formatValue(item)}
-</div>`).join("")
-
-document.getElementById("opportunities").innerHTML = oppHTML || `<div class="empty">No opportunities reported.</div>`
-
-}catch(err){
-error.textContent = err.message || "Unable to analyze query right now."
-error.style.display = "block"
-}finally{
-button.disabled = false
-button.innerText = "Analyze"
-}
-
-}
-
-</script>
-
+        // Allow Enter+Ctrl to submit
+        document.getElementById('inquiry').addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeInquiry();
+            }
+        });
+    </script>
 </body>
 </html>
